@@ -4,8 +4,8 @@ def ForeName(length = 1,forename = ''):
     for char in range(length):
         forename = forename + str(random.choice(string.ascii_letters).lower()) + str(vowel [np.random.randint(0,5)])
         
-    if len(forename)>15:
-        return forename[0:15] #+ str(random.choice(string.ascii_letters).lower())
+    if len(forename)>length:
+        return forename[0:length] #+ str(random.choice(string.ascii_letters).lower())
     else:
         return forename
 #------------------xxxxxx--------------------------------xxx--------------------------------xxxx--------------
@@ -16,8 +16,8 @@ def Surname(length = 1,surname = ''):
     for char in range(length):
         surname = surname + str(random.choice(string.ascii_letters).lower()) + str(vowel [np.random.randint(0,5)])
         
-    if len(surname)>20:
-        return surname[0:20] #+ str(random.choice(string.ascii_letters).lower())
+    if len(surname)>length:
+        return surname[0:length] #+ str(random.choice(string.ascii_letters).lower())
     else:
         return surname
 #------------------xxxxxx--------------------------------xxx--------------------------------xxxx--------------
@@ -127,7 +127,23 @@ def DOB (FORMAT = "DD/MM/YYYY", AgeOnDate = str(datetime.datetime.strftime(datet
         return datetime.datetime.strftime(datetime.datetime.now(), '%d/%d/%Y');
     
 #--------------------------xxxxxxx-------------------------------------xxxxxxxx-------------------------------xxx--------
+
+# ------------- Generating Numbers of any specific digit 
+#Generating random the integers or float of any specif digit.
+def Number (length = 1, Type = "integer", NoOfDecimal = 2 ):
+    num = np.random.randint(0,9);
+    if str(Type).lower() == "integer":
+        while length > 1:
+            num = str(num) + str(np.random.randint(0,9)); 
+            length -= 1;
+        return num;
+    elif Type.lower() == "float":
+        while length > 1:
+            num = str(num) + str(np.random.randint(0,9)); 
+            length -= 1;
+        return float(num)/(10**NoOfDecimal); # for 2 digit decimal    
     
-    
+#--------------------------xxxxxxx-------------------------------------xxxxxxxx-------------------------------xxx--------
+
     
 		

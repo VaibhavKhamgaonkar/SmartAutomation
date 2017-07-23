@@ -18,7 +18,7 @@ import datetime;
 	#----------------------------************************-------------------------
 	
 #Chrome Drivers initialisation
-chrome_path = r'E:\chromedriver_win32\chromedriver.exe';
+chrome_path = r'C:\Users\vikas\Downloads\chromedriver_win32\chromedriver.exe';
 driver = webdriver.Chrome(chrome_path);
 driver.maximize_window();
 #Action Chains instantiate
@@ -31,10 +31,24 @@ time.sleep(1)
 #----------------------------************************-------------------------
 
 # Task to be performed
-Task = "add all the asus laptop below 22000 to cart"
+Task = "add all the asus laptops below 22000 to cart"
 '''"add all the Asus laptop between 20000 to 22000 to cart"
 "Add an Asus X540YA-XO106D, Asus X540LA-XX596D, HP 15-AU003TX laptop, HP Pavilion 15-au620TX, Mi 10000mAH Power Bank 2 (Black) and Samsung On7 Pro (Gold) mobile to Cart "'''
 #----------------------------************************-------------------------
+
+#adding stemming function 
+def Stem (sentense):
+    words = sentense.split(' ')
+    for text in words:
+        if text not in BrandList:
+            #the word is not a brand requires stemmer check
+            for suffix in ['ing', 'ly', 'ed', 'ious', 'ies', 'ive', 'es', 's', 'ment']:
+                if text.endswith(suffix):
+                    #replace  the word with stemmed word
+                    words[words.index(text)] = text[ : -len(suffix)]                 
+    return ' '.join(words)
+#----------------------------************************-------------------------
+
 # Creating DB for various activities 
 ProductList = ['power bank', 'mp3','dvd','laptop','mobile', 'phone','music player','head phone','headset','charger']
 # Creating a Brand List
@@ -45,7 +59,10 @@ BrandList = ['asus', 'samsung', 'lenovo','toshiba','sony','dell']
 #--------------------------- product to be added in certain range or min or max range
 
 def SingleMultipleCheck (task,driver):
-    item =  Task.lower().split(' ')
+    #pass the Task through Stemmer first
+    task = Stem(task)
+    #now perform split and create a list
+    item =  task.lower().split(' ')
     #Identify the Type of operation t obe performed
     if 'cart' in item:
         operation = 'cart'

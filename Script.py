@@ -18,7 +18,7 @@ import datetime;
 	#----------------------------************************-------------------------
 	
 #Chrome Drivers initialisation
-chrome_path = r'C:\Users\vikas\Downloads\chromedriver_win32\chromedriver.exe';
+chrome_path = r'E:\chromedriver_win32\chromedriver.exe';
 driver = webdriver.Chrome(chrome_path);
 driver.maximize_window();
 #Action Chains instantiate
@@ -31,9 +31,9 @@ time.sleep(1)
 #----------------------------************************-------------------------
 
 # Task to be performed
-Task = "add all the asus laptops below 22000 to cart"
-'''"add all the Asus laptop between 20000 to 22000 to cart"
-"Add an Asus X540YA-XO106D, Asus X540LA-XX596D, HP 15-AU003TX laptop, HP Pavilion 15-au620TX, Mi 10000mAH Power Bank 2 (Black) and Samsung On7 Pro (Gold) mobile to Cart "'''
+Task = "add all the dell laptops below 23000 to cart"
+#Task = "add all the dell laptop between 20000 to 22000 to cart"
+#"Add an Asus X540YA-XO106D, Asus X540LA-XX596D, HP 15-AU003TX laptop, HP Pavilion 15-au620TX, Mi 10000mAH Power Bank 2 (Black) and Samsung On7 Pro (Gold) mobile to Cart "'''
 #----------------------------************************-------------------------
 
 #adding stemming function 
@@ -51,6 +51,7 @@ def Stem (sentense):
 
 # Creating DB for various activities 
 ProductList = ['power bank', 'mp3','dvd','laptop','mobile', 'phone','music player','head phone','headset','charger']
+SimilarList = {'power bank' :['battery', 'battery bank', 'power storage'], 'laptop': ['notebook', 'computer', 'macbook', 'zenbook'] }# product with similar names
 # Creating a Brand List
 BrandList = ['asus', 'samsung', 'lenovo','toshiba','sony','dell']
 #----------------------------************************-------------------------
@@ -191,7 +192,7 @@ def ProductRange(item, minValue, maxValue, driver,operation): # operation variab
         for prod in  elements:
             print searchText.split(' ')[0] + ' -:- '+searchText.split(' ')[-1]
             print prod.text
-            if (searchText.split(' ')[0] in prod.text.lower() and searchText.split(' ')[-1] in prod.text.lower()):
+            if (searchText.split(' ')[0] in prod.text.lower() and (searchText.split(' ')[-1] in prod.text.lower() or [True for i in SimilarList.get(searchText.split(' ')[-1]) if i.lower() in prod.text.lower()]) ) :
                 driver.execute_script("arguments[0].focus();", prod) # focusing on element using javascript 
                 prod.click() #this will open product in new tab
                 #print "Wow Clicked on Product"
@@ -204,10 +205,19 @@ def ProductRange(item, minValue, maxValue, driver,operation): # operation variab
                 try:
                     WebDriverWait(driver,10).until(ec.presence_of_element_located((By.ID,'add-to-'+ operation +'-button')))
                     driver.find_element_by_id('add-to-'+ operation +'-button').click() # clicking on Cart button
+                    time.sleep(1)
+                    try:
+                        if WebDriverWait(driver, 5).until(ec.alert_is_present()):
+                                #driver.find_element_by_id('a-popover-header-2').send_keys(Keys.ESCAPE)
+                                driver.switch_to_active_element().send_keys(Keys.ESCAPE)
+                    except:
+                        pass
                     WebDriverWait(driver,10).until(ec.presence_of_element_located((By.PARTIAL_LINK_TEXT,'Proceed to checkout')))
-                    print ("Bingo : added to cart")
+                    print ("added to cart")
+                    
                 except:
-                    print " for this product located at : " + str(driver.find_element_by_xpath(""".//span[@id='productTitle']""").text) + '  cart option is not availble'
+                    print " for this product located at : " + str(driver.find_element_by_xpath(""".//span[@id='productTitle']""").text) + ' adding to cart is not availble'
+                
                 driver.close()
                 #driver.find_element_by_tag_name('body').send_keys(Keys.CONTROL + "w")
                 driver.switch_to_window (main_window)
